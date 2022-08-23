@@ -25,7 +25,10 @@ class GPUStatus():
         for host in self.hosts_list:
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(host, username=self.username, password=self.password)
+            try:
+                ssh.connect(host, username=self.username, password=self.password)
+            except Exception as e:
+                print(host + ': ' + str(e))
             stdin, stdout, stderr = ssh.exec_command('nvidia-smi')
             status = "".join(stdout.readlines())
             # regex to find GPU status
